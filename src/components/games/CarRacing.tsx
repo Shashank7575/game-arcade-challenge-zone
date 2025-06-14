@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,25 +14,27 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
   const [gameState, setGameState] = useState<'menu' | 'playing' | 'paused' | 'gameOver'>('menu');
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
-  const [playerCar, setPlayerCar] = useState({ x: 275, y: 350 });
+  const [playerCar, setPlayerCar] = useState({ x: 375, y: 500 });
   const [enemyCars, setEnemyCars] = useState<Array<{ x: number; y: number; id: number }>>([]);
   const [roadLines, setRoadLines] = useState<Array<{ y: number; id: number }>>([]);
   const [keys, setKeys] = useState({ left: false, right: false });
   
+  // Updated canvas dimensions and car sizes
+  const canvasWidth = 800;
+  const canvasHeight = 600;
+  const carWidth = 50;
+  const carHeight = 80;
+
   const gameSettings = {
-    Easy: { carSpeed: 3, enemySpeed: 2, spawnRate: 0.02 },
-    Medium: { carSpeed: 4, enemySpeed: 3, spawnRate: 0.03 },
-    Hard: { carSpeed: 5, enemySpeed: 4, spawnRate: 0.04 }
+    Easy: { carSpeed: 5, enemySpeed: 3, spawnRate: 0.02 },
+    Medium: { carSpeed: 6, enemySpeed: 4, spawnRate: 0.03 },
+    Hard: { carSpeed: 7, enemySpeed: 5, spawnRate: 0.04 }
   };
 
   const settings = gameSettings[difficulty as keyof typeof gameSettings];
-  const canvasWidth = 600;
-  const canvasHeight = 400;
-  const carWidth = 30;
-  const carHeight = 50;
 
   const resetGame = useCallback(() => {
-    setPlayerCar({ x: 275, y: 350 });
+    setPlayerCar({ x: 375, y: 500 });
     setEnemyCars([]);
     setRoadLines([]);
     setScore(0);
@@ -42,7 +43,7 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
 
   const startGame = useCallback(() => {
     setGameState('playing');
-    setPlayerCar({ x: 275, y: 350 });
+    setPlayerCar({ x: 375, y: 500 });
     setEnemyCars([]);
     setRoadLines([]);
     setScore(0);
@@ -60,8 +61,8 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
       // Move player car
       setPlayerCar(prev => {
         let newX = prev.x;
-        if (keys.left && newX > 150) newX -= settings.carSpeed;
-        if (keys.right && newX < 420) newX += settings.carSpeed;
+        if (keys.left && newX > 210) newX -= settings.carSpeed;
+        if (keys.right && newX < 540) newX += settings.carSpeed;
         return { ...prev, x: newX };
       });
 
@@ -92,7 +93,7 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
 
         // Add new enemy car
         if (Math.random() < settings.spawnRate) {
-          const lanes = [175, 275, 375];
+          const lanes = [275, 375, 475];
           newCars.push({
             x: lanes[Math.floor(Math.random() * lanes.length)],
             y: -50,
@@ -140,34 +141,34 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
 
     // Draw grass sides
     ctx.fillStyle = '#228B22';
-    ctx.fillRect(0, 0, 150, canvas.height);
-    ctx.fillRect(450, 0, 150, canvas.height);
+    ctx.fillRect(0, 0, 200, canvas.height);
+    ctx.fillRect(600, 0, 200, canvas.height);
 
     // Draw road markings
     ctx.fillStyle = '#fff';
     roadLines.forEach(line => {
-      ctx.fillRect(200, line.y, 5, 30);
-      ctx.fillRect(395, line.y, 5, 30);
+      ctx.fillRect(270, line.y, 10, 40);
+      ctx.fillRect(520, line.y, 10, 40);
     });
 
     // Draw center line
-    for (let i = 0; i < canvas.height; i += 40) {
+    for (let i = 0; i < canvas.height; i += 50) {
       ctx.fillStyle = '#ffff00';
-      ctx.fillRect(297, i, 6, 20);
+      ctx.fillRect(395, i, 10, 30);
     }
 
     // Draw player car
     ctx.fillStyle = '#ff0000';
     ctx.fillRect(playerCar.x, playerCar.y, carWidth, carHeight);
     ctx.fillStyle = '#000';
-    ctx.fillRect(playerCar.x + 5, playerCar.y + 5, 20, 40);
+    ctx.fillRect(playerCar.x + 10, playerCar.y + 10, 30, 60);
 
     // Draw enemy cars
     ctx.fillStyle = '#0000ff';
     enemyCars.forEach(car => {
       ctx.fillRect(car.x, car.y, carWidth, carHeight);
       ctx.fillStyle = '#fff';
-      ctx.fillRect(car.x + 5, car.y + 5, 20, 40);
+      ctx.fillRect(car.x + 10, car.y + 10, 30, 60);
       ctx.fillStyle = '#0000ff';
     });
   }, [playerCar, enemyCars, roadLines]);
@@ -216,7 +217,7 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-zinc-900 p-4">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between">
           <Button onClick={onBack} variant="outline" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
@@ -229,7 +230,7 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Game Canvas */}
+          {/* Game Canvas - Bigger size */}
           <div className="lg:col-span-3">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
               <CardContent className="p-4 relative">
@@ -244,10 +245,10 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
                 {gameState === 'menu' && (
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-lg">
                     <div className="text-center text-white">
-                      <h2 className="text-2xl font-bold mb-4">Car Racing</h2>
-                      <p className="mb-4">Use arrow keys to steer!</p>
-                      <Button onClick={startGame} className="flex items-center gap-2">
-                        <Play className="h-4 w-4" />
+                      <h2 className="text-4xl font-bold mb-6">Car Racing</h2>
+                      <p className="text-xl mb-6">Use arrow keys to steer!</p>
+                      <Button onClick={startGame} size="lg" className="flex items-center gap-2 text-lg">
+                        <Play className="h-5 w-5" />
                         Start Race
                       </Button>
                     </div>
@@ -286,24 +287,24 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
                 )}
 
                 {/* Score Display */}
-                <div className="absolute top-4 left-4 text-white text-xl font-bold">
+                <div className="absolute top-6 left-6 text-white text-3xl font-bold">
                   Distance: {score}m
                 </div>
 
                 {/* Controls */}
                 {gameState === 'playing' && (
-                  <div className="absolute top-4 right-4">
-                    <Button onClick={togglePause} variant="outline" size="sm">
-                      <Pause className="h-4 w-4" />
+                  <div className="absolute top-6 right-6">
+                    <Button onClick={togglePause} variant="outline" size="lg">
+                      <Pause className="h-5 w-5" />
                     </Button>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {/* Mobile Controls */}
-            <div className="mt-4 lg:hidden">
-              <div className="flex justify-center gap-4">
+            {/* Mobile Controls - Bigger buttons */}
+            <div className="mt-6 lg:hidden">
+              <div className="flex justify-center gap-8">
                 <Button
                   onTouchStart={() => setKeys(prev => ({ ...prev, left: true }))}
                   onTouchEnd={() => setKeys(prev => ({ ...prev, left: false }))}
@@ -311,6 +312,7 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
                   onMouseUp={() => setKeys(prev => ({ ...prev, left: false }))}
                   variant="outline"
                   size="lg"
+                  className="text-xl py-8 px-12"
                   disabled={gameState !== 'playing'}
                 >
                   ← Left
@@ -319,8 +321,9 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
                   onClick={gameState === 'playing' ? togglePause : startGame}
                   variant="outline"
                   size="lg"
+                  className="text-xl py-8 px-8"
                 >
-                  {gameState === 'playing' ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                  {gameState === 'playing' ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
                 </Button>
                 <Button
                   onTouchStart={() => setKeys(prev => ({ ...prev, right: true }))}
@@ -329,6 +332,7 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
                   onMouseUp={() => setKeys(prev => ({ ...prev, right: false }))}
                   variant="outline"
                   size="lg"
+                  className="text-xl py-8 px-12"
                   disabled={gameState !== 'playing'}
                 >
                   Right →
@@ -338,23 +342,23 @@ const CarRacing = ({ difficulty, onBack }: CarRacingProps) => {
           </div>
 
           {/* Stats Panel */}
-          <div>
+          <div className="lg:col-span-1">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Trophy className="h-5 w-5" />
+                <CardTitle className="text-white flex items-center gap-2 text-2xl">
+                  <Trophy className="h-6 w-6" />
                   Race Stats
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
+              <CardContent className="space-y-6">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-white">Distance:</span>
-                    <span className="text-yellow-400 font-bold text-xl">{score}m</span>
+                    <span className="text-white text-lg">Distance:</span>
+                    <span className="text-yellow-400 font-bold text-2xl">{score}m</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white">Best Distance:</span>
-                    <span className="text-green-400 font-bold text-xl">{highScore}m</span>
+                    <span className="text-white text-lg">Best Distance:</span>
+                    <span className="text-green-400 font-bold text-2xl">{highScore}m</span>
                   </div>
                 </div>
                 

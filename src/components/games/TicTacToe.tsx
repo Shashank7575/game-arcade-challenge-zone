@@ -151,7 +151,7 @@ const TicTacToe = ({ difficulty, onBack }: TicTacToeProps) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 p-4">
-      <div className="container mx-auto max-w-4xl">
+      <div className="container mx-auto max-w-6xl">
         <div className="mb-6 flex items-center justify-between">
           <Button onClick={onBack} variant="outline" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
@@ -163,12 +163,12 @@ const TicTacToe = ({ difficulty, onBack }: TicTacToeProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Game Board */}
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Game Board - Made bigger */}
+          <div className="lg:col-span-3">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
               <CardHeader>
-                <CardTitle className="text-white text-center">
+                <CardTitle className="text-white text-center text-2xl">
                   {winner 
                     ? winner === 'draw' 
                       ? "It's a Draw!" 
@@ -178,26 +178,27 @@ const TicTacToe = ({ difficulty, onBack }: TicTacToeProps) => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-2 max-w-md mx-auto">
+                <div className="grid grid-cols-3 gap-4 max-w-xl mx-auto">
                   {board.map((cell, index) => (
                     <button
                       key={index}
                       onClick={() => handleClick(index)}
-                      className="w-20 h-20 bg-white/20 hover:bg-white/30 border-2 border-white/30 rounded-lg flex items-center justify-center text-3xl font-bold text-white transition-all duration-200 hover:scale-105"
+                      className="w-28 h-28 bg-white/20 hover:bg-white/30 border-2 border-white/30 rounded-lg flex items-center justify-center text-5xl font-bold text-white transition-all duration-200 hover:scale-105"
                       disabled={!!cell || !!winner}
                     >
                       {cell}
                     </button>
                   ))}
                 </div>
-                <div className="flex justify-center gap-4 mt-6">
-                  <Button onClick={resetGame} className="flex items-center gap-2">
-                    <RotateCcw className="h-4 w-4" />
+                <div className="flex justify-center gap-4 mt-8">
+                  <Button onClick={resetGame} className="flex items-center gap-2 text-lg px-6 py-2">
+                    <RotateCcw className="h-5 w-5" />
                     New Game
                   </Button>
                   <Button
                     onClick={() => setGameMode(gameMode === 'ai' ? 'pvp' : 'ai')}
                     variant="outline"
+                    className="text-lg px-6 py-2"
                   >
                     {gameMode === 'ai' ? 'Play vs Friend' : 'Play vs AI'}
                   </Button>
@@ -207,32 +208,32 @@ const TicTacToe = ({ difficulty, onBack }: TicTacToeProps) => {
           </div>
 
           {/* Score Board */}
-          <div>
+          <div className="lg:col-span-1">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Trophy className="h-5 w-5" />
+                <CardTitle className="text-white flex items-center gap-2 text-2xl">
+                  <Trophy className="h-6 w-6" />
                   Score Board
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
+              <CardContent className="space-y-5">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <span className="text-white">You (X):</span>
-                    <span className="text-green-400 font-bold text-xl">{score.player}</span>
+                    <span className="text-white text-lg">You (X):</span>
+                    <span className="text-green-400 font-bold text-2xl">{score.player}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white">AI (O):</span>
-                    <span className="text-red-400 font-bold text-xl">{score.ai}</span>
+                    <span className="text-white text-lg">AI (O):</span>
+                    <span className="text-red-400 font-bold text-2xl">{score.ai}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-white">Draws:</span>
-                    <span className="text-yellow-400 font-bold text-xl">{score.draws}</span>
+                    <span className="text-white text-lg">Draws:</span>
+                    <span className="text-yellow-400 font-bold text-2xl">{score.draws}</span>
                   </div>
                 </div>
                 <div className="pt-4 border-t border-white/20">
                   <div className="text-center">
-                    <span className="text-white text-sm">Total Games: {score.player + score.ai + score.draws}</span>
+                    <span className="text-white text-lg">Total Games: {score.player + score.ai + score.draws}</span>
                   </div>
                 </div>
               </CardContent>
